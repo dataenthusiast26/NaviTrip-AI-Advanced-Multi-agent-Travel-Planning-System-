@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>NaviTrip AI — Intelligent Travel Planning</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            min-height: 100vh;
+            color: #1f2937;
+            background:
+                radial-gradient(circle at top left, #dbeafe 0%, transparent 35%),
+                radial-gradient(circle at bottom right, #ede9fe 0%, transparent 35%),
+                #f8fafc;
+        }
+
+        /* ---------- Navigation ---------- */
+
+        nav {
+            height: 72px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 7%;
+            background: rgba(255, 255, 255, 0.75);
+            backdrop-filter: blur(14px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.5);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 21px;
+            font-weight: 750;
+            color: #111827;
+        }
+
+        .logo-icon {
+            width: 38px;
+            height: 38px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 12px;
+            background: linear-gradient(135deg, #2563eb, #7c3aed);
+            color: white;
+            font-size: 19px;
+        }
+
+        .nav-label {
+            font-size: 14px;
+            color: #6b7280;
+        }
+
+        /* ---------- Hero ---------- */
+
+        .hero {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 85px 25px 45px;
+            text-align: center;
+        }
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            padding: 8px 15px;
+            border-radius: 999px;
+            background: rgba(255, 255, 255, 0.8);
+            border: 1px solid #e5e7eb;
+            color: #4f46e5;
+            font-size: 13px;
+            font-weight: 600;
+            margin-bottom: 24px;
+        }
+
+        .hero h1 {
+            font-size: clamp(42px, 6vw, 72px);
+            line-height: 1.05;
+            letter-spacing: -2.5px;
+            color: #111827;
+            margin-bottom: 22px;
+        }
+
+        .hero h1 span {
+            background: linear-gradient(135deg, #2563eb, #7c3aed);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero-description {
+            max-width: 650px;
+            margin: 0 auto 40px;
+            font-size: 18px;
+            line-height: 1.7;
+            color: #64748b;
+        }
+
+        /* ---------- Planner Card ---------- */
+
+        .planner-card {
+            max-width: 850px;
+            margin: 0 auto;
+            padding: 10px;
+            background: rgba(255, 255, 255, 0.9);
+            border: 1px solid #e5e7eb;
+            border-radius: 22px;
+            box-shadow: 0 25px 70px rgba(30, 41, 59, 0.12);
+        }
+
+        .input-wrapper {
+            display: flex;
+            align-items: flex-end;
+            gap: 10px;
+        }
+
+        textarea {
+            flex: 1;
+            min-height: 110px;
+            padding: 18px;
+            resize: none;
+            border: none;
+            outline: none;
+            background: transparent;
+            font-family: inherit;
+            font-size: 16px;
+            color: #1f2937;
+        }
+
+        textarea::placeholder {
+            color: #94a3b8;
+        }
+
+        .plan-button {
+            border: none;
+            border-radius: 15px;
+            padding: 14px 21px;
+            margin-bottom: 8px;
+            background: linear-gradient(135deg, #2563eb, #7c3aed);
+            color: white;
+            font-size: 14px;
+            font-weight: 650;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .plan-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(79, 70, 229, 0.25);
+        }
+
+        .plan-button:disabled {
+            opacity: 0.6;
+            cursor: wait;
+            transform: none;
+        }
+
+        .hint {
+            margin-top: 14px;
+            font-size: 12px;
+            color: #94a3b8;
+        }
+
+        /* ---------- Examples ---------- */
+
+        .examples {
+            max-width: 850px;
+            margin: 30px auto 0;
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .example {
+            padding: 9px 14px;
+            border-radius: 999px;
+            border: 1px solid #e2e8f0;
+            background: rgba(255, 255, 255, 0.7);
+            color: #64748b;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .example:hover {
+            border-color: #a5b4fc;
+            color: #4f46e5;
+            background: white;
+        }
+
+        /* ---------- Features ---------- */
+
+        .features {
+            max-width: 1000px;
+            margin: 55px auto 90px;
+            padding: 0 25px;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 18px;
+        }
+
+        .feature {
+            padding: 25px;
+            background: rgba(255, 255, 255, 0.65);
+            border: 1px solid #e5e7eb;
+            border-radius: 18px;
+        }
+
+        .feature-icon {
+            width: 42px;
+            height: 42px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 12px;
+            background: #eef2ff;
+            margin-bottom: 17px;
+            font-size: 19px;
+        }
+
+        .feature h3 {
+            margin-bottom: 8px;
+            font-size: 15px;
+            color: #1e293b;
+        }
+
+        .feature p {
+            font-size: 13px;
+            line-height: 1.6;
+            color: #64748b;
+        }
+
+        /* ---------- Result ---------- */
+
+        #result {
+            display: none;
+            max-width: 850px;
+            margin: 0 auto 70px;
+            padding: 30px;
+            background: white;
+            border: 1px solid #e5e7eb;
+            border-radius: 20px;
+            box-shadow: 0 15px 45px rgba(15, 23, 42, 0.08);
+        }
+
+        #result h2 {
+            margin-bottom: 18px;
+            color: #111827;
+        }
+
+        #answer {
+            white-space: pre-wrap;
+            line-height: 1.7;
+            color: #475569;
+        }
+
+        .loading {
+            color: #6366f1;
+        }
+
+        /* ---------- Responsive ---------- */
+
+        @media (max-width: 700px) {
+            .hero {
+                padding-top: 55px;
+            }
+
+            .hero h1 {
+                letter-spacing: -1.5px;
+            }
+
+            .hero-description {
+                font-size: 16px;
+            }
+
+            .input-wrapper {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .plan-button {
+                margin: 0 8px 8px;
+            }
+
+            .features {
+                grid-template-columns: 1fr;
+            }
+
+            .nav-label {
+                display: none;
+            }
+        }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+
+</head>
+
+<body>
+
+    <!-- Navigation -->
+    <nav>
+        <div class="logo">
+            <div class="logo-icon">✦</div>
+            NaviTrip AI
+        </div>
+
+        <div class="nav-label">
+            Intelligent Multi-Agent Travel Planning
+        </div>
+    </nav>
+
+
+    <!-- Hero Section -->
+    <main>
+
+        <section class="hero">
+
+            <div class="badge">
+                ✨ AI-powered travel intelligence
+            </div>
+
+            <h1>
+                Plan your journey.<br>
+                <span>Let AI handle the rest.</span>
+            </h1>
+
+            <p class="hero-description">
+                NaviTrip AI combines specialized AI agents, live travel
+                information, research, and intelligent planning to create
+                practical trips tailored to you.
+            </p>
+
+
+            <!-- Travel Planner -->
+            <div class="planner-card">
+
+                <div class="input-wrapper">
+
+                    <textarea
+                        id="travelInput"
+                        placeholder="Tell me about your trip...&#10;&#10;Example: Plan a 7-day trip from Mumbai to Japan under ₹2.5 lakh with hotels, flights and sightseeing."
+                    ></textarea>
+
+                    <button
+                        class="plan-button"
+                        id="planButton"
+                        onclick="planTrip()"
+                    >
+                        Plan My Trip →
+                    </button>
+
+                </div>
+
+            </div>
+
+            <div class="hint">
+                Describe your destination, dates, budget, interests, or travel style.
+            </div>
+
+
+            <!-- Example Prompts -->
+            <div class="examples">
+
+                <button
+                    class="example"
+                    onclick="useExample('Plan a 5-day trip to Goa under ₹50,000')"
+                >
+                    🏖️ Goa getaway
+                </button>
+
+                <button
+                    class="example"
+                    onclick="useExample('Plan a 7-day trip to Japan from Mumbai under ₹2.5 lakh')"
+                >
+                    🗾 Japan adventure
+                </button>
+
+                <button
+                    class="example"
+                    onclick="useExample('Plan a 6-day trip to Thailand for two people')"
+                >
+                    🌴 Thailand escape
+                </button>
+
+            </div>
+
+        </section>
+
+
+        <!-- Result Section -->
+        <section id="result">
+
+            <h2>✈️ Your Travel Plan</h2>
+
+            <div id="answer"></div>
+
+        </section>
+
+
+        <!-- Features -->
+        <section class="features">
+
+            <div class="feature">
+
+                <div class="feature-icon">🧠</div>
+
+                <h3>Multi-Agent Intelligence</h3>
+
+                <p>
+                    Specialized agents work together to research,
+                    compare, plan, and refine your trip.
+                </p>
+
+            </div>
+
+
+            <div class="feature">
+
+                <div class="feature-icon">🔎</div>
+
+                <h3>Real Travel Research</h3>
+
+                <p>
+                    Travel information is gathered from external
+                    sources and live APIs where appropriate.
+                </p>
+
+            </div>
+
+
+            <div class="feature">
+
+                <div class="feature-icon">🎯</div>
+
+                <h3>Personalized Decisions</h3>
+
+                <p>
+                    Your budget, preferences, dates, and interests
+                    are considered when creating the final plan.
+                </p>
+
+            </div>
+
+        </section>
+
+    </main>
+
+
+    <script>
+
+        // Put an example prompt into the input box
+        function useExample(text) {
+            document.getElementById("travelInput").value = text;
+            document.getElementById("travelInput").focus();
+        }
+
+
+        // Send the travel request to our FastAPI backend
+        async function planTrip() {
+
+            const input = document.getElementById("travelInput");
+            const button = document.getElementById("planButton");
+            const result = document.getElementById("result");
+            const answer = document.getElementById("answer");
+
+            const message = input.value.trim();
+
+            // Don't send an empty request
+            if (!message) {
+                input.focus();
+                return;
+            }
+
+            // Show loading state
+            button.disabled = true;
+            button.textContent = "Planning...";
+            result.style.display = "block";
+            answer.innerHTML = '<span class="loading">✦ NaviTrip AI is planning your journey...</span>';
+
+            try {
+
+                // Call our FastAPI endpoint
+                const response = await fetch("/api/travel", {
+                    method: "POST",
+
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+
+                    body: JSON.stringify({
+                        message: message
+                    })
+                });
+
+                const data = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(data.error || "Something went wrong.");
+                }
+
+                // Display the final answer returned by LangGraph
+                answer.innerHTML = marked.parse(data.answer);
+
+            } catch (error) {
+
+                answer.textContent =
+                    "Sorry, something went wrong.\n\n" + error.message;
+
+            } finally {
+
+                button.disabled = false;
+                button.textContent = "Plan My Trip →";
+
+            }
+        }
+
+
+        // Allow Ctrl/Cmd + Enter to submit the request
+        document.getElementById("travelInput").addEventListener("keydown", function(event) {
+
+            if ((event.ctrlKey || event.metaKey) && event.key === "Enter") {
+                planTrip();
+            }
+
+        });
+
+    </script>
+
+</body>
+</html>
